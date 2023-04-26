@@ -286,17 +286,3 @@ SIC_oct = data_SAT_SIC_avg['SIC_oct']
 SIC_nov = data_SAT_SIC_avg['SIC_nov']
 SIC_dec = data_SAT_SIC_avg['SIC_dec']
 
-SIC_nov[34:40] = SIC_nov[34:40] - 15
-SIC_nov[34] = SIC_nov[34] + 5
-
-SIC_dec[34:40] = SIC_dec[34:40] - 15
-SIC_dec[34] = SIC_dec[34] + 5
-
-SIC_jan[34:40] = SIC_jan[34:40] - 15
-SIC_jan[34] = SIC_jan[34] + 5
-
-SIC_feb[34:40] = SIC_feb[34:40] - 15
-SIC_feb[34] = SIC_feb[34] + 5
-
-SIC_mar[34:40] = SIC_mar[34:40] - 15
-SIC_mar[34] = SIC_mar[34] + 5

@@ -38,7 +38,7 @@ file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MHW_metrics_full\Max_SSTA
 data_Max_SSTA_1982_2021_ts = np.load(file+'.npz')
 Max_SSTA_1982_2021_ts = data_Max_SSTA_1982_2021_ts['Max_SSTA_1982_2021_ts']
 Max_SSTA_1982_2021_ts += 1.5
-Max_SSTA_1982_2021_ts[34:40] = Max_SSTA_1982_2021_ts[34:40] + 0.2
+Max_SSTA_1982_2021_ts[34:40] = Max_SSTA_1982_2021_ts[34:40]
 
 
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MATLAB_metrics\SeaIce_ts'
@@ -80,11 +80,8 @@ MHW_mean = np.nanmean(MHW_mean_ts+mask_ts, axis=(0,1))
 MHW_max = np.nanmean(MHW_max_ts+mask_ts, axis=(0,1))
 
 MHW_cum = np.nanmean(MHW_cum_ts+mask_ts, axis=(0,1))
-MHW_cum[34:40]=MHW_cum[34:40]+7
-
 
 MHW_td = np.nanmean(MHW_td_ts+mask_ts, axis=(0,1))
-MHW_td += 3
 
 
 #Areal Coverage
@@ -360,12 +357,6 @@ SAT_anom_dec_averaged = rollavg_roll_edges(SAT_anom_dec, window)
 SAT_anom_jan_averaged = rollavg_roll_edges(SAT_anom_jan, window)
 SAT_anom_feb_averaged = rollavg_roll_edges(SAT_anom_feb, window)
 SAT_anom_mar_averaged = rollavg_roll_edges(SAT_anom_mar, window)
-
-SAT_anom_nov_averaged[34:40] = SAT_anom_nov_averaged[34:40] + 0.2
-SAT_anom_dec_averaged[34:40] = SAT_anom_dec_averaged[34:40] + 0.2
-SAT_anom_jan_averaged[34:40] = SAT_anom_jan_averaged[34:40] + 0.2
-SAT_anom_feb_averaged[34:40] = SAT_anom_feb_averaged[34:40] + 0.2
-SAT_anom_mar_averaged[34:40] = SAT_anom_mar_averaged[34:40] + 0.2
 
 
 time = np.arange(1982, 2022)

@@ -64,9 +64,9 @@ def motu_option_parser(script_template, usr, pwd, output_filename):
     dictionary['auth_mode'] = 'cas'
     return dictionary
 
-USERNAME = 'dicman'
-PASSWORD = 'Icmancsic2021'
-year = 2022
+USERNAME = '*******'
+PASSWORD = '***********'
+year = 1982
 #year = 2017
 month = 1
 day = 1
@@ -74,11 +74,10 @@ for i in range(121):
 #for i in range(31):
     
     #OUTPUT_FILENAME = 'SST_MED'  
+    OUTPUT_FILENAME = 'SST_ANT'
     #OUTPUT_FILENAME = 'SST_SD_ANT'
     #OUTPUT_FILENAME = 'SIC_ANT'
     #OUTPUT_FILENAME = 'CHL_ANT'
-    OUTPUT_FILENAME = 'SST_Canary'
-    
     
     #Downloading the script template for each of the products
     
@@ -87,8 +86,7 @@ for i in range(121):
     #script_template = 'python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id SST_MED_SST_L4_REP_OBSERVATIONS_010_021-TDS --product-id cmems_SST_MED_SST_L4_REP_OBSERVATIONS_010_021 --longitude-min -5.5 --longitude-max 36.325 --latitude-min 30.125 --latitude-max 46.025 --date-min "1982-01-01 00:00:00" --date-max "2022-03-03 00:00:00" --variable analysed_sst --out-dir <OUTPUT_DIRECTORY> --out-name <OUTPUT_FILENAME> --user <USERNAME> --pwd <PASSWORD>'
     
     #SST ANT
-    # script_template = 'python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id SST_GLO_SST_L4_REP_OBSERVATIONS_010_024-TDS --product-id C3S-GLO-SST-L4-REP-OBS-SST --longitude-min -180 --longitude-max 180 --latitude-min -90 --latitude-max -40 --date-min "2017-01-01 12:00:00" --date-max "2017-02-28 12:00:00" --variable analysed_sst --out-dir <OUTPUT_DIRECTORY> --out-name <OUTPUT_FILENAME> --user <USERNAME> --pwd <PASSWORD>'
-    script_template = 'python -m motuclient --motu https://nrt.cmems-du.eu/motu-web/Motu --service-id SST_GLO_SST_L4_NRT_OBSERVATIONS_010_001-TDS --product-id METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2 --longitude-min -22.98 --longitude-max -11.02 --latitude-min 24.02 --latitude-max 33.03 --date-min "2022-01-01 00:00:00" --date-max "2022-12-31 23:59:59" --variable analysed_sst --out-dir <OUTPUT_DIRECTORY> --out-name <OUTPUT_FILENAME> --user <USERNAME> --pwd <PASSWORD>'
+    script_template = 'python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id SST_GLO_SST_L4_REP_OBSERVATIONS_010_024-TDS --product-id C3S-GLO-SST-L4-REP-OBS-SST --longitude-min -180 --longitude-max 180 --latitude-min -90 --latitude-max -40 --date-min "2017-01-01 12:00:00" --date-max "2017-02-28 12:00:00" --variable analysed_sst --out-dir <OUTPUT_DIRECTORY> --out-name <OUTPUT_FILENAME> --user <USERNAME> --pwd <PASSWORD>'
     
     #Sea Ice Concentration
     #script_template = 'python -m motuclient --motu https://my.cmems-du.eu/motu-web/Motu --service-id SST_GLO_SST_L4_REP_OBSERVATIONS_010_024-TDS --product-id C3S-GLO-SST-L4-REP-OBS-SST --longitude-min -180 --longitude-max 180 --latitude-min -90 --latitude-max -40 --date-min "2017-01-01 12:00:00" --date-max "2017-02-28 12:00:00" --variable sea_ice_fraction --out-dir <OUTPUT_DIRECTORY> --out-name <OUTPUT_FILENAME> --user <USERNAME> --pwd <PASSWORD>'
@@ -137,7 +135,7 @@ for i in range(121):
     interval = {'date_max' : f_date_f,
                 'date_min' : i_date_i,
                 'out_name' : OUTPUT_FILENAME + '_' + i_date_save + '_' + f_date_save + '.nc',
-                'out_dir' : r'E:\ICMAN-CSIC\Estrategias_Marinas\Datos_SST\Canarias'
+                'out_dir' : r'E:\ICMAN-CSIC\MHWs\Datos_SST'
               }
     
     #Updating the request dictionary

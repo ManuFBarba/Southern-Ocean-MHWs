@@ -1,5 +1,7 @@
 
 
+### This code belongs to Eric Oliver:  https://github.com/ecjoliver   ###
+
 import numpy as np
 import scipy as sp
 from scipy import stats
