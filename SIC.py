@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-################################## Sea Ice ##############################
+################################## Sea Ice Concentrations ##############################
 """
 
 # Load required modules
@@ -52,8 +52,8 @@ SIC_2015_2021 = np.nanmean(SIC_year[33:40,:,:], axis=0)
 ## Sea Ice Concentration Anomalies ##
 #####################################
 
-#Climatology 1982-2011
-ds_clim=ds_SIC.sel(time=slice("1982-01-01", "2011-12-31"))
+#Climatology 1982-2012
+ds_clim=ds_SIC.sel(time=slice("1982-01-01", "2012-12-31"))
 SIC_clim=ds_clim['sea_ice_fraction'][:,::10,::10].groupby('time.month').mean(dim='time')#.load
 
 #Compute SIC Anomaly
@@ -67,7 +67,7 @@ SIC_Anom = xr.where(SIC_Anom == 0, np.NaN, SIC_Anom)
 # SIC_Anom_2009_2015 = np.nanmean(SIC_Anom[27:34,:,:], axis=0)
 # SIC_Anom_2015_2021 = np.nanmean(SIC_Anom[33:40,:,:], axis=0)
 
-SIC_Anom_2015_2021 = SIC_Anom.sel(time=slice("2017-01-01", "2017-12-31"))
+SIC_Anom_2015_2021 = SIC_Anom.sel(time=slice("2015-01-01", "2021-12-31"))
 SIC_anom=SIC_anom.groupby('time.year').mean(dim='time',skipna=True)[()]
 
 
