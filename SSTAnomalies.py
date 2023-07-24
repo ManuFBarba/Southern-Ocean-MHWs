@@ -6,11 +6,9 @@
 """
 
 # Load required modules
- 
 import netCDF4 as nc
 import numpy as np
 import pandas as pd
-
 
 from datetime import datetime as dt
 from netCDF4 import Dataset 
@@ -50,8 +48,8 @@ t, dates, T, year, month, day, doy = ecj.timevector([1982, 1, 1], [2021, 12, 31]
 # lonmin = -70.
 # lonmax = 15
 
-ds = xr.open_mfdataset(r'D:\ICMAN-CSIC\MHW_ANT\datasets\\SST_bimensual\*.nc', parallel=True)
-
+# ds = xr.open_mfdataset(r'D:\ICMAN-CSIC\MHW_ANT\datasets\\SST_bimensual\*.nc', parallel=True)
+ds = xr.open_dataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\SST_full\SST_ANT_1982-2021_40.nc')
 #ds = Dataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\SST_full\SST_ANT_1982-2021_40.nc')
 
 #ds=ds.sel(lat=slice(latmin,latmax),lon=slice(lonmin,lonmax),time=slice("1982-01-01", "2021-12-30"))
@@ -75,9 +73,9 @@ Aver_SST -= 273.15
 #Compute climatology
 #sst_clim_full=ds['analysed_sst'].groupby('time.month').mean(dim='time')#.load
 
-#Climatology 1982-2011
-ds_clim=ds.sel(time=slice("1982-01-01", "2011-12-31"))
-sst_clim=ds_clim['analysed_sst'][:,::10,::10].groupby('time.month').mean(dim='time')#.load
+#Climatology 1982-2012
+ds_clim=ds.sel(time=slice("1982-01-01", "2012-12-31"))
+sst_clim=ds_clim['analysed_sst'][:,::10,::10].groupby('time.month').mean(dim='time', skipna=True)
 
 
 #Compute SST Anomaly
@@ -121,7 +119,7 @@ np.savez(outfile, sst_anom_1982_2015=sst_anom_1982_2015, sst_anom_2009_2015=sst_
 
 
 #Averaged SSTA over all years (Mean SSTA)
-Mean_SSTA_1982_2021 = np.mean(sst_anom, axis=0) #Average SSTA 1982-2021 (Clim 1982-2011)
+Mean_SSTA_1982_2021 = np.mean(sst_anom, axis=0) #Average SSTA 1982-2021 (Clim 1982-2012)
 
 #Time-averaged Maximum SSTA [1982-2021]
 Aver_Max_SSTA_1982_2021 = np.max(sst_anom, axis=0)
@@ -352,25 +350,49 @@ land_50m = cft.NaturalEarthFeature('physical', 'land', '50m',
 ice_50m = cft.NaturalEarthFeature('physical', 'ocean', \
         scale='50m', edgecolor='none', facecolor='white')
 
-ax.add_feature(ice_50m)
+# ax.add_feature(ice_50m)
 
 cmap=plt.cm.YlOrRd
-#cmap=plt.cm.YlOrRd
+#cmap=plt.cm.RdBu_r  
+#cmap = 'Spectral_r'
 levels = [0,1,2,3,4,5,6,7,8]
-#levels = [0,0.5,1,1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8]
+
 p1 = plt.contourf(lon, lat, Aver_Max_SSTA_1982_2021+mask, levels, cmap=cmap, extend='both', transform=ccrs.PlateCarree()) 
+
+
+# # Find the maximum and minimum values, ignoring NaNs
+# max_value = np.nanmax(Aver_Max_SSTA_1982_2021+mask)
+# min_value = np.nanmin(Aver_Max_SSTA_1982_2021+mask)
+
+# # Find the corresponding indices of the maximum and minimum values
+# max_index = np.unravel_index(np.nanargmax(Aver_Max_SSTA_1982_2021+mask), Aver_Max_SSTA_1982_2021.shape)
+# min_index = np.unravel_index(np.nanargmin(Aver_Max_SSTA_1982_2021+mask), Aver_Max_SSTA_1982_2021.shape)
+
+# # Get the lon and lat values for the maximum and minimum indices
+# max_lon = lon[max_index]
+# max_lat = lat[max_index]
+# min_lon = lon[min_index]
+# min_lat = lat[min_index]
+
+# # Plot the maximum value with a red dot
+# ax.plot(max_lon, max_lat, 'ro', markersize=10, transform=ccrs.PlateCarree())
+
+# # Plot the minimum value with a blue dot
+# ax.plot(min_lon, min_lat, 'bo', markersize=10, transform=ccrs.PlateCarree())
+
+
+
 cbar = plt.colorbar(p1, shrink=0.8, extend ='both')
 cbar.ax.tick_params(axis='y', size=10, direction='in', labelsize=35) 
 cbar.ax.minorticks_off()
-cbar.ax.get_yaxis().set_ticks([0, 2, 4, 6, 8])
-#cbar.ax.set_ylabel('[$^\circ$C]', fontsize=25)
-
+cbar.set_ticks([0, 2, 4, 6, 8])
+cbar.ax.set_ylabel('$^\circ$C', fontsize=30)
 
 ax.set_extent([-280, 80, -80, -40], crs=ccrs.PlateCarree())
 ax.add_feature(land_50m, color='black')
 ax.coastlines(resolution='50m', linewidth= 0.50)
-ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
-ax.set_title('a) Max SSTA [$^\circ$C]', fontsize=40)
+ax.gridlines(draw_labels=False, dms=False, x_inline=False, y_inline=False)
+ax.set_title('a   Maximum SSTA', fontsize=40)
 
 # Compute a circle in axes coordinates, which can be used as a boundary
 # for the map. We can pan/zoom as much as we like - the boundary will be
@@ -380,6 +402,7 @@ center, radius = [0.5, 0.5], 0.5
 verts = np.vstack([np.sin(theta), np.cos(theta)]).T
 circle = mpath.Path(verts * radius + center)
 ax.set_boundary(circle, transform=ax.transAxes)
+
 
 outfile = r'C:\Users\Manuel\Desktop\Figures_Paper_SO_MHW\Max_SSTA.png'
 fig.savefig(outfile, dpi=300, bbox_inches='tight', pad_inches=0.5)
