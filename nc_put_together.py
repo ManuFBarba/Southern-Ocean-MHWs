@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-############################ Many .nc into a single file ######################
+############################ Merge many .nc files into a single file ######################
 """
 
 
