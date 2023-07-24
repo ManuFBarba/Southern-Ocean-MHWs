@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-######################### Temporal Analysis MHW ij ############################
+######################### Temporal Analysis MHW ij loop (2D) ############################
 
 """
 
@@ -38,16 +38,16 @@ else:
 
 
 climatologyPeriod=[1982, 2012]
-pctile=90
+pctile=95
 
 
 #Dates
-t, dates, T, year, month, day, doy = ecj.timevector([1982, 1, 1], [2022, 12, 31])
+t, dates, T, year, month, day, doy = ecj.timevector([1982, 1, 1], [2021, 12, 31])
 
 
 #Reading Dataset and objectdataset
-#ds = Dataset(r'E:\MHW_Antartida\SST_ANT_1982-2021_40.nc', mode='r')
-ds = xr.open_dataset(r'E:\ICMAN-CSIC\Estrategias_Marinas\Datos_SST\Canarias/SST_Canary_clipped.nc')
+ds = Dataset(r'E:\MHW_Antartida\SST_ANT_1982-2021_40.nc', mode='r')
+
 
 sst = ds['analysed_sst']
 lon = ds['lon']
