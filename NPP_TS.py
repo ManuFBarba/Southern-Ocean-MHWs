@@ -89,7 +89,8 @@ plt.legend()
 
 
 
-# Setting the figure size and style
+
+# Setting the bar figure size and style
 plt.figure(figsize=(10, 5))
 
 # Creating an array of indices for x-axis positioning
