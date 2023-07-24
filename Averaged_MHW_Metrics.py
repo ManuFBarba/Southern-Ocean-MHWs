@@ -1,6 +1,6 @@
 ############################# Averaged SIC and N-SAT #######################
 
-#Loading requires modeles
+#Loading requires modules
 import numpy as np
 import xarray as xr
 import pandas as pd
