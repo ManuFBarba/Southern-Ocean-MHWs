@@ -3,7 +3,6 @@
 ################################## Masked MHW Metrics #########################
 """
 
-
 from netCDF4 import Dataset
 import numpy as np
 import xarray as xr 
@@ -163,13 +162,12 @@ ice_50m = cft.NaturalEarthFeature('physical', 'ocean', \
 ax.add_feature(ice_50m)
 
 
-levels = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+levels = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 p1 = plt.contourf(lon, lat, seaIce_2012_2021, levels, cmap='cmo.ice', extend='both', transform=ccrs.PlateCarree()) 
 
 cbar = plt.colorbar(p1, shrink=0.8, extend ='both')
 cbar.ax.tick_params(axis='y', size=5, direction='in', labelsize=25) 
 cbar.ax.minorticks_off()
-#p1 = plt.pcolormesh(lon, lat, MHW_dur_tr, vmin=-2, vmax=2, cmap=cmap, transform=ccrs.PlateCarree())
 
 ax.set_extent([-280, 80, -80, -40], crs=ccrs.PlateCarree())
 ax.add_feature(land_50m, color=[0.8, 0.8, 0.8])
