@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-############################# MHW ANTARCTIC METRICS ###################################
+############################# SOUTHERN OCEAN MHW METRICS ###################################
 
 """
 
@@ -22,6 +22,9 @@ import matplotlib.colors as colors
 
 
 ##########Plotting the South Polar Stereo map with metrics#####################
+
+#Firtsly, load metrics from MHW_metrics_from_MATLAB.py
+
 
 
 ############
