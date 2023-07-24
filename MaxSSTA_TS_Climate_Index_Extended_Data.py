@@ -75,9 +75,9 @@ np.savez(outfile, PAC_Max_SSTA_monthly_TS=PAC_Max_SSTA_monthly_TS, ATL_Max_SSTA_
 #Load previously-proccessed Max SSTA data
 file = r'E:\ICMAN-CSIC\SO_MHW\Datasets\Max_SSTA_monthly\Max_SSTA_monthly_TS'
 data_Max_SSTA = np.load(file+'.npz')
-PAC_Max_SSTA_monthly_TS = data_Max_SSTA['PAC_Max_SSTA_monthly_TS']+2.75
-ATL_Max_SSTA_monthly_TS = data_Max_SSTA['ATL_Max_SSTA_monthly_TS']+2.75
-IND_Max_SSTA_monthly_TS = data_Max_SSTA['IND_Max_SSTA_monthly_TS']+2.75
+PAC_Max_SSTA_monthly_TS = data_Max_SSTA['PAC_Max_SSTA_monthly_TS']
+ATL_Max_SSTA_monthly_TS = data_Max_SSTA['ATL_Max_SSTA_monthly_TS']
+IND_Max_SSTA_monthly_TS = data_Max_SSTA['IND_Max_SSTA_monthly_TS']
 
 
 #Load Climate Mode Indices (ONI and SAMI)
@@ -94,7 +94,7 @@ data1 = PAC_Max_SSTA_monthly_TS
 data2 = ATL_Max_SSTA_monthly_TS
 data3 = IND_Max_SSTA_monthly_TS
                       
-start_index_Clim = (2011 - 1982) * 12  # First month index of first year
+start_index_Clim = (2015 - 1982) * 12  # First month index of first year
 end_index_Clim = start_index_Clim + 24  # Last month index of last year
 
 data4 = ENSO[start_index_Clim:end_index_Clim]
@@ -379,7 +379,7 @@ fig, ax1 = plt.subplots(figsize=(10, 5))
 plt.rcParams.update({'font.size': 16, 'font.family': 'Arial'})
 
 # Date range to highlight
-highlighted = np.arange(2013, 2015)
+highlighted = np.arange(2014, 2016)
 
 # Representing Data1
 for i in range(0, len(years), 2):
@@ -417,17 +417,6 @@ black_line.set_linewidth(2)  # Set the width of the highlighted line to 2
 
 outfile = r'C:\Users\Manuel\Desktop\Paper_SO_MHWs\Reviews\Figuras\Max_SSTA_SAMI_Indian.png'
 fig.savefig(outfile, dpi=300, bbox_inches='tight', pad_inches=0.5)
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -555,7 +544,7 @@ fig, ax1 = plt.subplots(figsize=(10, 5))
 plt.rcParams.update({'font.size': 16, 'font.family': 'Arial'})
 
 # Date range to highlight
-highlighted = np.arange(2017, 2019)
+highlighted = np.arange(2019, 2021)
 
 # Representing Data1
 for i in range(0, len(years), 2):
@@ -593,14 +582,6 @@ black_line.set_linewidth(2)  # Set the width of the highlighted line to 2
 
 outfile = r'C:\Users\Manuel\Desktop\Paper_SO_MHWs\Reviews\Figuras\Max_SSTA_TSAI_Indian.png'
 fig.savefig(outfile, dpi=300, bbox_inches='tight', pad_inches=0.5)
-
-
-
-
-
-
-
-
 
 
 
