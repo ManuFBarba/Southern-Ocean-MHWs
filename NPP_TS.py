@@ -73,7 +73,6 @@ NPP_IND = np.nanmean(npp_Indian, axis=(1, 2, 3))
 
 
 
-
 plt.figure(figsize=(20, 5))
 # Plotting the time series with transparency
 plt.plot(monthly_dates, NPP_PAC, color='darkblue', label='Pacific', alpha=0.7)
@@ -87,12 +86,6 @@ plt.ylabel(r'CbPM NPP [$mg C·m^{-3}·day^{-1}$]')
 
 # Adding legend
 plt.legend()
-
-
-
-
-
-
 
 
 
@@ -124,9 +117,6 @@ plt.tight_layout()
 
 # Adjusting the y-axis limits (optional)
 plt.ylim(bottom=0)  # Set the bottom limit to 0 if necessary
-
-
-
 
 
 
