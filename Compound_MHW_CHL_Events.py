@@ -5,7 +5,6 @@
 
 """
 
-
 # Load required modules
 import netCDF4 as nc
 import numpy as np
@@ -17,8 +16,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import marineHeatWaves as mhw
 from tempfile import TemporaryFile
-
-
 
 
 # Some basic extreme events parameters
@@ -43,16 +40,16 @@ else:
 t_sst_nsat_ice = np.arange(date(1982,1,1).toordinal(),date(2021,12,31).toordinal()+1)
 dates = [date.fromordinal(tt.astype(int)) for tt in t_sst_nsat_ice]
 
-t_chl = np.arange(date(1993,1,1).toordinal(),date(2020,12,31).toordinal()+1)
-dates_chl = [date.fromordinal(tt.astype(int)) for tt in t_chl]
+t_npp = np.arange(date(1993,1,1).toordinal(),date(2020,12,31).toordinal()+1)
+dates_npp = [date.fromordinal(tt.astype(int)) for tt in t_npp]
 
 
 #Reading Datasets and variables
 #SST
 ds_sst = xr.open_dataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\SST_full\SST_ANT_1982-2021_40.nc')
 
-#CHL
-ds_chl = xr.open_mfdataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\CHL\Daily_chl\*.nc', parallel=True)
+#NPP / CHL
+ds_npp = xr.open_mfdataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\CHL\Daily_chl\*.nc', parallel=True)
 
 
 #N-SAT
@@ -220,8 +217,8 @@ sst = ds_sst.analysed_sst.sel(lat=slice(lat_point_min_sst, lat_point_max_sst), l
 sst = np.nanmean(sst, axis=(1, 2))
 sst = sst - 273.15
 
-chl = ds_chl.nppv.sel(latitude=slice(lat_point_min, lat_point_max), longitude=slice(lon_point_min, lon_point_max))
-chl = np.nanmean(chl, axis=(1, 2, 3))
+npp = ds_npp.nppv.sel(latitude=slice(lat_point_min, lat_point_max), longitude=slice(lon_point_min, lon_point_max))
+npp = np.nanmean(npp, axis=(1, 2, 3))
 
 t2m = ds_nsat.t2m
 t2m = t2m.sel(longitude=slice(lon_point_min_sst, lon_point_max_sst), latitude=slice(lat_point_max_sst, lat_point_min_sst))
@@ -267,12 +264,12 @@ mean, trend, dtrend = mhw.meanTrend(mhwBlock)
 
 
 ###############
-# Applying Marine Heat Wave definition to Chl values
+# Applying Marine Heat Wave definition to NPP values
 ###############
 
-hchls, clim_chl = mhw.detect(t_chl, temp=npp_averaged, climatologyPeriod=[1993, 2014], pctile=90, windowHalfWidth=5, smoothPercentile=True, smoothPercentileWidth=31, minDuration=5, joinAcrossGaps=True, maxGap=2, maxPadLength=False, coldSpells=coldSpells, alternateClimatology=False)
-chlBlock = mhw.blockAverage(t_chl, hchls, clim=clim_chl, temp=chl)
-mean, trend, dtrend = mhw.meanTrend(mhwBlock)
+hnpp, clim_npp = mhw.detect(t_npp, temp=npp_averaged, climatologyPeriod=[1993, 2012], pctile=95, windowHalfWidth=5, smoothPercentile=True, smoothPercentileWidth=31, minDuration=5, joinAcrossGaps=True, maxGap=2, maxPadLength=False, coldSpells=coldSpells, alternateClimatology=False)
+nppBlock = mhw.blockAverage(t_npp, hnpp, clim=clim_npp, temp=npp_averaged)
+mean, trend, dtrend = mhw.meanTrend(nppBlock)
 
 
 
@@ -292,16 +289,16 @@ window = 31 #South Shetland + Drake
 # window = 7 #Ross Sea
 t2m_averaged = rollavg_roll_edges(t2m, window)
 
-npp_averaged = rollavg_roll_edges(chl, 5)
+npp_averaged = rollavg_roll_edges(npp, 5)
 
 ###
 ev_int = np.argmax(mhws['intensity_max'])   # Find most intense event
 ev_dur = np.argmax(mhws['duration'])        # Find largest event
 ev = np.argmax(mhws)
 
-ev_int_chl = np.argmax(hchls['intensity_max'])   # Find most intense event
-ev_dur_chl = np.argmax(hchls['duration'])        # Find largest event
-ev_chl = np.argmax(hchls)
+ev_int_npp = np.argmax(hnpp['intensity_max'])   # Find most intense event
+ev_dur_npp = np.argmax(hnpp['duration'])        # Find largest event
+ev_npp = np.argmax(hnpp)
 
 
 
@@ -352,19 +349,19 @@ for ev0 in np.arange(ev - 40, ev + 40, 1):
 
 # Plot CHL, seasonal cycle, threshold, and Hchl event
 # new_chl = (clim_chl['thresh']) - 0.2
-ax2.plot(dates_chl, (clim_chl['seas']), '-', color='grey')
-ax2.plot(dates_chl, npp_averaged, '-', color='darkgreen')
-ax2.plot(dates_chl, (clim_chl['thresh']), '-.', color='darkgreen')
+ax2.plot(dates_npp, (clim_npp['seas']), '-', color='grey')
+ax2.plot(dates_npp, npp_averaged, '-', color='darkgreen')
+ax2.plot(dates_npp, (clim_npp['thresh']), '-.', color='darkgreen')
 ax2.set_ylim(0, 18)
 # ax2.set_ylabel(r'CHL [$mg·m^{-3}$]', fontsize=22, labelpad=20, color='darkgreen')
 ax2.set_ylabel(r'CbPM NPP [$mg C·m^{-3}·day^{-1}$]', fontsize=22, labelpad=20, color='darkgreen')
 ax2.tick_params(axis='y', colors='darkgreen')  # Set y-axis tick color
 
 # Shade Hchl events in dark green
-for ev0 in np.arange(ev_chl - 40, ev_chl + 40, 1):
-    t1 = np.where(t_chl == hchls['time_start'][ev0])[0][0]
-    t2 = np.where(t_chl == hchls['time_end'][ev0])[0][0]
-    ax2.fill_between(dates_chl[t1 - 1: t2 + 2], npp_averaged[t1 - 1: t2 + 2], clim_chl['thresh'][t1 - 1: t2 + 2], color='darkgreen', alpha=0.5)
+for ev0 in np.arange(ev_npp - 40, ev_npp + 40, 1):
+    t1 = np.where(t_npp == hnpp['time_start'][ev0])[0][0]
+    t2 = np.where(t_npp == hnpp['time_end'][ev0])[0][0]
+    ax2.fill_between(dates_npp[t1 - 1: t2 + 2], npp_averaged[t1 - 1: t2 + 2], clim_npp['thresh'][t1 - 1: t2 + 2], color='darkgreen', alpha=0.5)
 
 # for ev0 in np.arange(ev_chl - 3, ev_chl - 1, 1):
 #     t1 = np.where(t_chl == hchls['time_start'][ev0])[0][0]
@@ -402,9 +399,9 @@ for ev0 in np.arange(ev - 20, ev + 20, 1):
     t1_mhw = np.where(t_sst_nsat_ice == mhws['time_start'][ev0])[0][0]
     t2_mhw = np.where(t_sst_nsat_ice == mhws['time_end'][ev0])[0][0]
     
-    for ev_chl0 in np.arange(ev_chl - 40, ev_chl + 40, 1):
-        t1_hnpp = np.where(t_chl == hchls['time_start'][ev_chl0])[0][0]
-        t2_hnpp = np.where(t_chl == hchls['time_end'][ev_chl0])[0][0]
+    for ev_npp0 in np.arange(ev_npp - 40, ev_npp + 40, 1):
+        t1_hnpp = np.where(t_npp == hnpp['time_start'][ev_npp0])[0][0]
+        t2_hnpp = np.where(t_npp == hnpp['time_end'][ev_npp0])[0][0]
         
         if (t1_mhw <= t2_hnpp) and (t2_mhw >= t1_hnpp):
             t1 = max(t1_mhw, t1_hnpp)
@@ -429,13 +426,5 @@ ax1.set_title('Davis Sea', fontsize=30)
 
 outfile = r'C:\Users\Manuel\Desktop\Paper_SO_MHWs\Reviews\Figs_Explicacion_Reviews\Compound_MHW_NPP_Amundsen_Bellingshausen.png'
 fig.savefig(outfile, dpi=150, bbox_inches='tight', pad_inches=0.5)
-
-
-
-
-
-
-
-
 
 
