@@ -86,11 +86,6 @@ MHW_cum_ts = MHW_cum_ts[:,:,16:40]
 
 
 
-
-
-
-
-
                 ##Representing Scatter plots##
                 
 # Define the longitude ranges for different areas
@@ -302,9 +297,14 @@ fig.savefig(outfile, dpi=600, bbox_inches='tight', pad_inches=0.5)
 
 
 
+
+
+
+
+
 ############################################################
 
-# Crear máscaras para las longitudes
+# Creating masks for the longitudes
 mask1 = np.zeros((720, 100, 24), dtype=bool)
 mask1[219:401, :, :] = True
 
