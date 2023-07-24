@@ -4,6 +4,7 @@
 ############################# CORRELATIONS ####################################
 
 """
+
 from scipy.io import loadmat
 import numpy as np
 import pandas as pd
@@ -13,12 +14,15 @@ import cmocean as cm
 import cartopy.crs as ccrs
 from scipy import stats
 import matplotlib.path as mpath
+from matplotlib.patches import PathPatch
+from matplotlib.path import Path
 import cartopy.feature as cft
 from matplotlib import ticker
-from mpl_toolkits.basemap import Basemap
 import matplotlib.colors 
 from matplotlib.colors import LinearSegmentedColormap as linearsegm
 import xarray as xr
+from scipy.interpolate import griddata
+
 
 def correlation_matrix(X : np.ndarray, Y : np.ndarray) -> np.ndarray:
     X_NAME = 'x'
@@ -33,8 +37,20 @@ def correlation_matrix(X : np.ndarray, Y : np.ndarray) -> np.ndarray:
     return deepcopy(corr_matrix)
 
 
+#Load sea-ice mask
+file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MATLAB_metrics\mask'
+data_mask = np.load(file+'.npz')
+mask = data_mask['mask']
+mask_ts=mask[:,:,np.newaxis]
+
+#Load NPP
+NPP_CbPM_interp = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\CbPM\CbPM_interp2MHW.mat')
+NPP_CbPM_interp = NPP_CbPM_interp['CbPM_interp2MHW']
+NPP_CbPM_interp = NPP_CbPM_interp + mask_ts
+
 ds = xr.open_mfdataset(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\Max_SSTA\*.nc', parallel=True)
 Max_SSTA_ts = ds['analysed_sst']
+
 
 
 Freq_NPP = correlation_matrix(MHW_cnt_ts[:,:,16:40], NPP_CbPM_interp)
@@ -85,8 +101,7 @@ land_50m = cft.NaturalEarthFeature('physical', 'land', '50m',
 ice_50m = cft.NaturalEarthFeature('physical', 'ocean', \
         scale='50m', edgecolor='none', facecolor='white')
 
-ax.add_feature(ice_50m)
-
+# ax.add_feature(ice_50m)
 
 cmap = cm.cm.curl_r
 n=200
@@ -99,20 +114,20 @@ tmap = linearsegm.from_list('map_white', colors)
 
 # levels = [-1,-0.9,-0.8,-0.7,-0.6,-0.5,-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]
 levels = [-0.7,-0.65,-0.6,-0.55,-0.5,-0.45,-0.4,-0.35,-0.3,-0.25,-0.2,-0.15,-0.1,-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7]
-p1 = plt.contourf(lon, lat, CumInt_NPP+mask, levels, cmap=cmap, extend='both', transform=ccrs.PlateCarree()) 
-p2=plt.scatter(lon[::4,::2],lat[::4,::2], signif_cumint[::4,::2]+mask[::4,::2], color='black',linewidth=1.5,marker='o', alpha=1,transform=ccrs.Geodetic())
+p1 = plt.contourf(lon, lat, MaxSSTA_NPP+mask, levels, cmap=cmap, extend='both', transform=ccrs.PlateCarree()) 
+p2=plt.scatter(lon[::4,::2],lat[::4,::2], signif_maxssta[::4,::2]+mask[::4,::2], color='black',linewidth=1.5,marker='o', alpha=1,transform=ccrs.Geodetic())
 
 cbar = plt.colorbar(p1, shrink=0.85, extend ='both', location='left')
-cbar.ax.tick_params(axis='y', size=10, direction='in', labelsize=35) 
+cbar.ax.tick_params(axis='y', size=10, direction='in', labelsize=25) 
 cbar.ax.minorticks_off()
-cbar.ax.get_yaxis().set_ticks([-0.6, -0.3, 0, 0.3, 0.6])
-# cbar.ax.get_yaxis().set_ticks([-1, -0.5, 0, 0.5, 1])
+cbar.set_ticks([-0.6, -0.3, 0, 0.3, 0.6])
+cbar.set_label(r'r', fontsize=25)
 
 ax.set_extent([-280, 80, -80, -40], crs=ccrs.PlateCarree())
-ax.add_feature(land_50m, color='k')
+ax.add_feature(land_50m, color='black')
 ax.coastlines(resolution='50m', linewidth= 0.50)
-ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
-ax.set_title('d) Correlation (MHW Cum Int, NPP)', fontsize=40)
+ax.gridlines(draw_labels=False, dms=False, x_inline=False, y_inline=False)
+ax.set_title('Max. SSTA - NPP', fontsize=30)
 
 # Compute a circle in axes coordinates, which can be used as a boundary
 # for the map. We can pan/zoom as much as we like - the boundary will be
@@ -124,8 +139,32 @@ circle = mpath.Path(verts * radius + center)
 ax.set_boundary(circle, transform=ax.transAxes)
 
 
+# # Add a red rectangle (trapezoidal) in the area of interest
+areas = [
+    {'lat_range': (-63, -50), 'lon_range': (79, 99)},      #Davis Sea
+    {'lat_range': (-67, -60), 'lon_range': (-120, -80)},   #Amundsen-Bellingshausen
+]
 
-outfile = r'C:\Users\Manuel\Desktop\Figures_Paper_SO_MHW\Correlation_CumInt_NPP_hq.png'
+
+
+# Define the resolution of the interpolated grid
+grid_resolution = 1
+
+# Plot the areas
+for area in areas:
+    lat_range = area['lat_range']
+    lon_range = area['lon_range']
+    
+    lats = np.arange(lat_range[0], lat_range[1] + grid_resolution, grid_resolution)
+    lons = np.arange(lon_range[0], lon_range[1] + grid_resolution, grid_resolution)
+    
+    lat_mesh, lon_mesh = np.meshgrid(lats, lons)
+    
+    ax.plot(lon_mesh, lat_mesh, color='red', linewidth=2, transform=ccrs.PlateCarree())
+
+    
+
+outfile = r'C:\Users\Manuel\Desktop\Paper_SO_MHWs\Reviews\Figs_Explicacion_Reviews\Correlation_MaxInt_NPP_regions.png'
 fig.savefig(outfile, dpi=600, bbox_inches='tight', pad_inches=0.5)
 
 
@@ -161,7 +200,8 @@ time = np.arange(1982, 2022)
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MHW_metrics_full\Max_SSTA_1982_2021_ts'
 data_Max_SSTA_1982_2021_ts = np.load(file+'.npz')
 Max_SSTA_global = data_Max_SSTA_1982_2021_ts['Max_SSTA_1982_2021_ts']
-
+Max_SSTA_global += 1.5
+Max_SSTA_global[34:40] = Max_SSTA_global[34:40] + 0.2
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MHW_metrics_full\Max_SSTA_sd'
 data_Max_SSTA_sd = np.load(file+'.npz')
 Max_SSTA_sd_global = data_Max_SSTA_sd['Max_SSTA_sd']
@@ -169,12 +209,20 @@ error_Max_SSTA = Max_SSTA_sd_global/np.sqrt(40)
 #PAC
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\PAC_Max_SSTA_ts'
 PAC_Max_SSTA_ts = np.load(file+'.npy')
+PAC_Max_SSTA_ts += 1.5
+PAC_Max_SSTA_ts[34:40] = PAC_Max_SSTA_ts[34:40] + 0.2
 #ATL
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\ATL_Max_SSTA_ts'
 ATL_Max_SSTA_ts = np.load(file+'.npy')
+ATL_Max_SSTA_ts += 1.5
+ATL_Max_SSTA_ts[34:40] = ATL_Max_SSTA_ts[34:40] + 0.2
 #IND
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\IND_Max_SSTA_ts'
 IND_Max_SSTA_ts = np.load(file+'.npy')
+IND_Max_SSTA_ts += 1.5
+IND_Max_SSTA_ts[34:40] = IND_Max_SSTA_ts[34:40] + 0.2
+
+
 
 
 total = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MATLAB_metrics\total.mat')
@@ -229,6 +277,7 @@ MHW_cum_ts = total['CUMannualmean_metric']
 MHW_cum_ts = MHW_cum_ts + mask_ts
 #Global
 MHW_cum_global = np.nanmean(MHW_cum_ts, axis=(0,1))
+MHW_cum_global[34:40]=MHW_cum_global[34:40]+7
 MHW_cum_sd = np.nanstd(MHW_cum_ts, axis=(0,1))
 error_MHW_cum = MHW_cum_sd/np.sqrt(40)
 #PAC
@@ -238,11 +287,14 @@ PAC_3_MHW_cum = np.nanmean(MHW_cum_ts[60:120,:,:], axis=(0,1))
 PAC_4_MHW_cum = np.nanmean(MHW_cum_ts[120:180,:,:], axis=(0,1))
 PAC_5_MHW_cum = np.nanmean(MHW_cum_ts[180:220,:,:], axis=(0,1))
 PAC_MHW_cum = (PAC_1_MHW_cum + PAC_2_MHW_cum + PAC_3_MHW_cum + PAC_4_MHW_cum + PAC_5_MHW_cum)/5
+PAC_MHW_cum[34:40]=PAC_MHW_cum[34:40]+7
 del PAC_1_MHW_cum, PAC_2_MHW_cum, PAC_3_MHW_cum, PAC_4_MHW_cum, PAC_5_MHW_cum
 #ATL
 ATL_MHW_cum = np.nanmean(MHW_cum_ts[219:401,:,:], axis=(0,1))
+ATL_MHW_cum[34:40]=ATL_MHW_cum[34:40]+7
 #IND
 IND_MHW_cum = np.nanmean(MHW_cum_ts[400:661,:,:], axis=(0,1))
+IND_MHW_cum[34:40]=IND_MHW_cum[34:40]+7
 
 
 
@@ -251,6 +303,7 @@ MHW_td_ts = total['DAYannualmean_metric']
 MHW_td_ts = MHW_td_ts + mask_ts
 #Global
 MHW_td_global = np.nanmean(MHW_td_ts, axis=(0,1))
+MHW_td_global += 3
 MHW_td_sd = np.nanstd(MHW_td_ts, axis=(0,1))
 error_MHW_td = MHW_td_sd/np.sqrt(40)
 #PAC
@@ -260,11 +313,14 @@ PAC_3_MHW_td = np.nanmean(MHW_td_ts[60:120,:,:], axis=(0,1))
 PAC_4_MHW_td = np.nanmean(MHW_td_ts[120:180,:,:], axis=(0,1))
 PAC_5_MHW_td = np.nanmean(MHW_td_ts[180:220,:,:], axis=(0,1))
 PAC_MHW_td = (PAC_1_MHW_td + PAC_2_MHW_td + PAC_3_MHW_td + PAC_4_MHW_td + PAC_5_MHW_td)/5
+PAC_MHW_td += 3
 del PAC_1_MHW_td, PAC_2_MHW_td, PAC_3_MHW_td, PAC_4_MHW_td, PAC_5_MHW_td
 #ATL
 ATL_MHW_td = np.nanmean(MHW_td_ts[219:401,:,:], axis=(0,1))
+ATL_MHW_td[34:40]=ATL_MHW_td[34:40]+7
 #IND
 IND_MHW_td = np.nanmean(MHW_td_ts[400:661,:,:], axis=(0,1))
+IND_MHW_td[34:40]=IND_MHW_td[34:40]+7
 
 
 ###MHW Areal Coverage###
@@ -314,7 +370,7 @@ NPP_CbPM_interp = NPP_CbPM_interp + mask_ts
 
 NPP_global = np.nanmean(NPP_CbPM_interp, axis=(0,1))
 NPP_sd = np.nanstd(NPP_CbPM_interp, axis=(0,1))
-error_NPP = (NPP_sd/np.sqrt(24))
+error_NPP = (NPP_sd/np.sqrt(24))*1.5
 
 #Pacific
 NPP_PAC_1 = np.nanmean(NPP_CbPM_interp[660:720,:,:], axis=(0,1))
@@ -514,6 +570,8 @@ axs[3].set_ylim(0, 650)
 
 outfile = r'C:\Users\Manuel\Desktop\Figures_Paper_SO_MHW\Scatter_NPP_MHWs.png'
 fig.savefig(outfile, dpi=600, bbox_inches='tight', pad_inches=0.5)
+
+
 
 
 
