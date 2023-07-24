@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-############################## Temporal Analysis MHW 1D #######################
+############################## Temporal Analysis MHW (concrete point: lat, lon) #######################
 
 """
 
@@ -152,7 +152,7 @@ t2m = dz.variables['t2m'][:,min_index_lat_nsat,min_index_lon_nsat] - 273.15
 # Applying Marine Heat Wave definition
 ###############
 
-mhws, clim = mhw.detect(t, temp=sst, climatologyPeriod=[1982, 2011], pctile=95, windowHalfWidth=5, smoothPercentile=True, smoothPercentileWidth=31, minDuration=5, joinAcrossGaps=True, maxGap=2, maxPadLength=False, coldSpells=coldSpells, alternateClimatology=False)
+mhws, clim = mhw.detect(t, temp=sst, climatologyPeriod=[1982, 2012], pctile=95, windowHalfWidth=5, smoothPercentile=True, smoothPercentileWidth=31, minDuration=5, joinAcrossGaps=True, maxGap=2, maxPadLength=False, coldSpells=coldSpells, alternateClimatology=False)
 mhwBlock = mhw.blockAverage(t, mhws, clim=clim, temp=sst)
 mean, trend, dtrend = mhw.meanTrend(mhwBlock)
 
