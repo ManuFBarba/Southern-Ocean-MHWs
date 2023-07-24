@@ -17,7 +17,6 @@ import matplotlib.pyplot as plt
 import marineHeatWaves as mhw
 from tempfile import TemporaryFile
 
-
 # Some basic extreme events parameters
 coldSpells = False # If true detect coldspells instead of heatwaves
 col_clim = '0.25'
