@@ -26,8 +26,7 @@ time = np.arange(1982, 2022)
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MHW_metrics_full\Max_SSTA_1982_2021_ts'
 data_Max_SSTA_1982_2021_ts = np.load(file+'.npz')
 Max_SSTA_global = data_Max_SSTA_1982_2021_ts['Max_SSTA_1982_2021_ts']
-Max_SSTA_global += 1.5
-Max_SSTA_global[34:40] = Max_SSTA_global[34:40] + 0.2
+Max_SSTA_global[34:40] = Max_SSTA_global[34:40]
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MHW_metrics_full\Max_SSTA_sd'
 data_Max_SSTA_sd = np.load(file+'.npz')
 Max_SSTA_sd_global = data_Max_SSTA_sd['Max_SSTA_sd']
@@ -35,19 +34,12 @@ error_Max_SSTA = Max_SSTA_sd_global/np.sqrt(40)
 #PAC
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\PAC_Max_SSTA_ts'
 PAC_Max_SSTA_ts = np.load(file+'.npy')
-PAC_Max_SSTA_ts += 1.5
-PAC_Max_SSTA_ts[34:40] = PAC_Max_SSTA_ts[34:40] + 0.2
 #ATL
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\ATL_Max_SSTA_ts'
 ATL_Max_SSTA_ts = np.load(file+'.npy')
-ATL_Max_SSTA_ts += 1.5
-ATL_Max_SSTA_ts[34:40] = ATL_Max_SSTA_ts[34:40] + 0.2
 #IND
 file = r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\Spatially_Averaged_MHW_metrics\IND_Max_SSTA_ts'
 IND_Max_SSTA_ts = np.load(file+'.npy')
-IND_Max_SSTA_ts += 1.5
-IND_Max_SSTA_ts[34:40] = IND_Max_SSTA_ts[34:40] + 0.2
-
 
 
 fig, axs = plt.subplots(figsize=(10, 5))
@@ -227,7 +219,6 @@ MHW_cum_ts = total['CUMannualmean_metric']
 MHW_cum_ts = MHW_cum_ts + mask_ts
 #Global
 MHW_cum_global = np.nanmean(MHW_cum_ts, axis=(0,1))
-MHW_cum_global[34:40]=MHW_cum_global[34:40]+7
 MHW_cum_sd = np.nanstd(MHW_cum_ts, axis=(0,1))
 error_MHW_cum = MHW_cum_sd/np.sqrt(40)
 #PAC
@@ -237,15 +228,12 @@ PAC_3_MHW_cum = np.nanmean(MHW_cum_ts[60:120,:,:], axis=(0,1))
 PAC_4_MHW_cum = np.nanmean(MHW_cum_ts[120:180,:,:], axis=(0,1))
 PAC_5_MHW_cum = np.nanmean(MHW_cum_ts[180:220,:,:], axis=(0,1))
 PAC_MHW_cum = (PAC_1_MHW_cum + PAC_2_MHW_cum + PAC_3_MHW_cum + PAC_4_MHW_cum + PAC_5_MHW_cum)/5
-PAC_MHW_cum[34:40]=PAC_MHW_cum[34:40]+7
 del PAC_1_MHW_cum, PAC_2_MHW_cum, PAC_3_MHW_cum, PAC_4_MHW_cum, PAC_5_MHW_cum
 #ATL
 ATL_MHW_cum = np.nanmean(MHW_cum_ts[219:401,:,:], axis=(0,1))
-ATL_MHW_cum[34:40]=ATL_MHW_cum[34:40]+7
+
 #IND
 IND_MHW_cum = np.nanmean(MHW_cum_ts[400:661,:,:], axis=(0,1))
-IND_MHW_cum[34:40]=IND_MHW_cum[34:40]+7
-
 
 fig, axs = plt.subplots(figsize=(10, 5))
 plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = True 
@@ -297,7 +285,6 @@ MHW_td_ts = total['DAYannualmean_metric']
 MHW_td_ts = MHW_td_ts + mask_ts
 #Global
 MHW_td_global = np.nanmean(MHW_td_ts, axis=(0,1))
-MHW_td_global += 3
 MHW_td_sd = np.nanstd(MHW_td_ts, axis=(0,1))
 error_MHW_td = MHW_td_sd/np.sqrt(40)
 #PAC
@@ -307,14 +294,13 @@ PAC_3_MHW_td = np.nanmean(MHW_td_ts[60:120,:,:], axis=(0,1))
 PAC_4_MHW_td = np.nanmean(MHW_td_ts[120:180,:,:], axis=(0,1))
 PAC_5_MHW_td = np.nanmean(MHW_td_ts[180:220,:,:], axis=(0,1))
 PAC_MHW_td = (PAC_1_MHW_td + PAC_2_MHW_td + PAC_3_MHW_td + PAC_4_MHW_td + PAC_5_MHW_td)/5
-PAC_MHW_td += 3
 del PAC_1_MHW_td, PAC_2_MHW_td, PAC_3_MHW_td, PAC_4_MHW_td, PAC_5_MHW_td
+
 #ATL
 ATL_MHW_td = np.nanmean(MHW_td_ts[219:401,:,:], axis=(0,1))
-ATL_MHW_td[34:40]=ATL_MHW_td[34:40]+7
+
 #IND
 IND_MHW_td = np.nanmean(MHW_td_ts[400:661,:,:], axis=(0,1))
-IND_MHW_td[34:40]=IND_MHW_td[34:40]+7
 
 
 fig, axs = plt.subplots(figsize=(10, 5))
@@ -434,8 +420,11 @@ fig.savefig(outfile, dpi=600, bbox_inches='tight', pad_inches=0.5)
 
 
 
-time_NPP = np.arange(1, 289)
+
+
+
 ###CbPM NPP###
+time_NPP = np.arange(1, 289)
 #Global
 Total_NPP_CbPM = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\CbPM\Total.mat')
 NPP_CbPM = Total_NPP_CbPM['Total']
