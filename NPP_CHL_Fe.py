@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 
-################ MODIS, SeaWiFS, VIIRS NPP, CHL and Fe (Model) ################
+################ MODIS, SeaWiFS, VIIRS NPP. And Modelled CHL and Fe ################
 
 """
 
@@ -814,42 +814,12 @@ fig.savefig(outfile, dpi=600, bbox_inches='tight', pad_inches=0.5)
 ## Represent pcolor NPP ##
 
 
-# fig = plt.figure()
-# ax = plt.axes(projection='3d')
-# ax.contour3D(lon, lat, NPP_CbPM_interp[:,:,:], 24, cmap=cm.cm.algae)
-# ax.set_xlabel('x')
-# ax.set_ylabel('y')
-# ax.set_zlabel('z')
-# plt.colorbar(p1, cmap=cmap, shrink=0.8)
-# ax.set_title('CbPM NPP')
-
-
-
-
-
-
 from matplotlib.colors import LinearSegmentedColormap
 import NPP_map
 NPP_map = NPP_map.NPP_map_r
 NPP_map_divided = [[i/255.0 for i in row] for row in NPP_map]
 NPP_map = LinearSegmentedColormap.from_list('npp', NPP_map_divided)
 
-
-
-# fig, axs = plt.subplots(figsize=(20, 5))
-# plt.rcParams['ytick.right'] = plt.rcParams['ytick.labelright'] = False
-# plt.rcParams['ytick.left'] = plt.rcParams['ytick.labelleft'] = True
-# plt.rcParams.update({'font.size': 16})
-
-
-# cmap= NPP_map
-
-
-# levels = [0,50,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900]
-
-# p1 = plt.contourf(lon, lat, NPP_CbPM_interp[:,:,23], levels, cmap=cmap, alpha=1, extend='max') 
-# # plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%m-%Y'))
-# plt.colorbar(p1, cmap=cmap, shrink=1)
 
 
 time_NPP = np.arange(1998, 2022)
@@ -862,7 +832,6 @@ plt.rcParams.update({'font.size': 16})
 
 cmap= NPP_map
 
-# cmap = plt.get_cmap('jet')
 
 levels = [0,25,50,75,100,125,150,175,200,225,250,275,300,325,350,375,400,425,450,475,500,525,550,575,600]
 
