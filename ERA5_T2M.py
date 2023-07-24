@@ -10,24 +10,17 @@ import netCDF4 as nc
 import numpy as np
 import pandas as pd
 
-
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 
-
 import matplotlib.path as mpath
-
 
 from datetime import datetime as dt
 from netCDF4 import Dataset 
 import xarray as xr 
 import ecoliver as ecj
-
 from dateutil.relativedelta import relativedelta
-
-
 import cmocean as cm
-
 import cartopy.feature as cft
 
 #Path
