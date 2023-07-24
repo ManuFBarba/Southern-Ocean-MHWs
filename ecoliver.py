@@ -1,5 +1,3 @@
-
-
 ### This code belongs to Eric Oliver:  https://github.com/ecjoliver   ###
 
 import numpy as np
