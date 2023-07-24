@@ -1,4 +1,3 @@
- # -*- coding: utf-8 -*-
 """
 ### This code belongs to Eric Oliver:  https://github.com/ecjoliver   ###
 
