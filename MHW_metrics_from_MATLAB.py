@@ -8,7 +8,6 @@ import numpy as np
 from netCDF4 import Dataset 
 
 
-
 #lat and lon
 lat = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\MHW_metrics\MATLAB_metrics\lat.mat')
 lat = lat['latitud']
@@ -135,9 +134,6 @@ MHW_max_dtr = total['MAXdetrend_metric']
 ### TOTAL MATRIX NPP ###
 ########################
 
-Total_NPP_VGPM = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\VGPM\Total.mat')
-
-NPP_VGPM = Total_NPP_VGPM['Total']
 
 Total_NPP_CbPM = loadmat(r'C:\ICMAN-CSIC\MHW_ANT\datasets_40\CbPM\Total.mat')
 
@@ -285,4 +281,3 @@ SIC_sep = data_SAT_SIC_avg['SIC_sep']
 SIC_oct = data_SAT_SIC_avg['SIC_oct']
 SIC_nov = data_SAT_SIC_avg['SIC_nov']
 SIC_dec = data_SAT_SIC_avg['SIC_dec']
-
